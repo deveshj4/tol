@@ -1,0 +1,30 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<script type="text/javascript">
+</script>
+<h1>Sign In</h1>
+<form action="" method="post" name="login">
+    {{ form.hidden_tag() }}
+    <p>
+        Email:<br>
+        {{ form.email(size=50) }}<br>
+        {% for error in form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        Password:<br>
+        {{ form.password(size=50) }}<br>
+        {% for error in form.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        <p>
+            <input type="submit" name="sign_in" value="Sign In">
+        </p>
+    </p>
+</form>
+<p>
+    If you are a new user you can
+    <a href="{{ url_for('register') }}">register here</a>.
+</p>
+{% endblock %}

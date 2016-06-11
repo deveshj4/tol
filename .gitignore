@@ -1,0 +1,11 @@
+# Directories
+flask
+
+# Compiled Sources
+*.pyc
+
+# Logs
+*.log
+
+# ctags
+tags
