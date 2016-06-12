@@ -8,6 +8,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(120), index=True)
     firstname = db.Column(db.String(64), nullable=False)
     lastname = db.Column(db.String(64), nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
     @property
     def is_authenticated(self):

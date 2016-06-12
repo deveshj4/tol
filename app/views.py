@@ -1,8 +1,20 @@
 from app import application, db, lm, cloudinaryDB
-from flask import render_template, redirect, flash, session, url_for, request, g
+from flask import render_template, redirect, flash, session, url_for, request
+from flask import g, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from forms import LoginForm, RegisterForm
 from models import User, Item, Sale
+from functools import wraps
+
+def roles_required(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if not g.user.is_admin:
+                abort(401)
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
 
 @application.before_request
 def before_request():
@@ -51,6 +63,7 @@ def logout():
     return redirect(url_for('index'))
 
 @application.route('/inventory', methods = ['GET', 'POST'])
+@roles_required('admin')
 def inventory():
     items = Item.query.all()
     if request.method == 'POST':
@@ -62,6 +75,7 @@ def inventory():
                            items=items)
 
 @application.route('/sales', methods = ['GET', 'POST'])
+@roles_required('admin')
 def sales():
     sales = Sale.query.all()
     if request.method == 'POST':

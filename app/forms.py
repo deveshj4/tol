@@ -35,6 +35,8 @@ class RegisterForm(Form):
             user = User(email=email, firstname=firstname,
                         lastname=lastname,
                         password=generate_password_hash(password))
+            if application.config['ADMIN_PASSWORD'] == password:
+                user.is_admin = True
             db.session.add(user)
             db.session.commit()
         else:
