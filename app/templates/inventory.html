@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Inventory List</h1>
+  {% for item in items %}
+  <div><p>Item: {{ item.name }}, Quantity: {{ item.quantity }}</b></p></div>
+  {% endfor %}
+{% endblock %}

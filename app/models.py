@@ -26,3 +26,30 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.first_name)
+
+class Item(db.Model):
+    __tablename__ = 'items'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, nullable=False, unique=True)
+    description = db.Column(db.String(250))
+    image_url = db.Column(db.String(120))
+    quantity = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    sales = db.relationship('Sale', backref='item', lazy='dynamic')
+
+    def get_id(self):
+            return str(self.id) # python 3
+
+    def image(self, size):
+        return cloudinaryDB.compose_url(self.image_url, size)
+
+    def __repr__(self):
+        return '<Item %r, Price %d>' % (self.name, self.price)
+
+class Sale(db.Model):
+    __tablename__ = 'sales'
+    id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
+    quantity = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.DateTime, index=True, nullable=False)
