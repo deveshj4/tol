@@ -112,3 +112,18 @@ def sales():
     return render_template("sales.html",
                            title='Sales',
                            sales=sales)
+
+def handle_error(errnum, errmsg):
+    if is_json_request():
+        return make_response(jsonify(error=errmsg), errnum)
+    else:
+        return make_response(render_template('error.html', error=errmsg),
+                             errnum)
+
+@application.errorhandler(404)
+def not_found(error):
+    handle_error(404, "File Not Found")
+
+@application.errorhandler(401)
+def not_found(error):
+    handle_error(401, "Access Denied")
