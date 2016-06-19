@@ -52,13 +52,13 @@ def validate_json_register(data):
         user.is_admin = True
     db.session.add(user)
     db.session.commit()
-    return user, jsonify(status='success', name=user.firstname)
+    return user, jsonify(status='success', user=repr(user))
 
 def validate_json_login(data):
     user = User.query.filter_by(email=data['email']).first()
     if user is not None:
         if check_password_hash(user.password, data['password']):
-            return user, jsonify(status='success', name=user.firstname)
+            return user, jsonify(status='success', user=repr(user))
         else:
             return None, jsonify(status='failed', error="Invalid email and \
                            password combination", error_field="password")

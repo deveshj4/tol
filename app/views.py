@@ -35,7 +35,7 @@ def load_user(id):
 @login_required
 def index():
     if is_json_request():
-        return jsonify(name=g.user.firstname)
+        return jsonify(user=repr(g.user))
     else:
         return render_template("index.html",
                                 title='Home',
@@ -45,7 +45,8 @@ def index():
 def register():
     if g.user is not None and g.user.is_authenticated:
         if is_json_request():
-            return jsonify(status='failed', name=g.user.firstname)
+            return jsonify(status='failed', error='user already logged in',
+                           user=repr(g.user))
         else:
             return redirect(url_for('index'))
     if is_json_request():
@@ -65,8 +66,8 @@ def register():
 def login():
     if g.user is not None and g.user.is_authenticated:
         if is_json_request():
-            return jsonify(state='user already logged in',
-                           name=g.user.firstname)
+            return jsonify(status='failed', error='user already logged in',
+                            user=repr(user))
         else:
             return redirect(url_for('index'))
     if is_json_request():
@@ -85,6 +86,8 @@ def login():
 @application.route('/logout')
 def logout():
     logout_user()
+    if is_json_request():
+        return jsonify(status='success')
     return redirect(url_for('index'))
 
 @application.route('/inventory', methods = ['GET', 'POST'])

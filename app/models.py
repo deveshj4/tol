@@ -26,7 +26,10 @@ class User(UserMixin, db.Model):
             return str(self.id) # python 3
 
     def __repr__(self):
-        return '<User %r>' % (self.first_name)
+        return '{"firstname":"%s","lastname":"%s","is_admin":"%s"}' % \
+                                                        (self.firstname,
+                                                            self.lastname,
+                                                            self.is_admin)
 
 class Item(db.Model):
     __tablename__ = 'items'
