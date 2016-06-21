@@ -1,7 +1,11 @@
 {% extends "base.html" %}
+
 {% block content %}
-  <h1>Sales List</h1>
-  {% for sale in sales %}
+<h1>Sales List</h1>
+{% for sale in sales %}
   <div><p>Item: {{ sale.item.name }}, Quantity: {{ sale.quantity }}</b></p></div>
-  {% endfor %}
+{% endfor %}
+<p>
+  <a href="{{ url_for('sales_update') }}">Add Sales Entry</a>
+</p>
 {% endblock %}

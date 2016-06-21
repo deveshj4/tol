@@ -2,10 +2,11 @@ from app import application, db, lm, cloudinaryDB
 from flask import render_template, redirect, flash, session, url_for, request
 from flask import g, abort, make_response, jsonify
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from forms import LoginForm, RegisterForm
+from forms import LoginForm, RegisterForm, InventoryItemForm, SalesItemForm
 from models import User, Item, Sale
 from functools import wraps
 from login_helper import *
+from inventory_helper import *
 
 def roles_required(*roles):
     def wrapper(f):
@@ -90,31 +91,61 @@ def logout():
         return jsonify(status='success')
     return redirect(url_for('index'))
 
-@application.route('/inventory', methods = ['GET', 'POST'])
+@application.route('/inventory')
 @login_required
 @roles_required('admin')
 def inventory():
     items = Item.query.all()
-    if request.method == 'POST':
-        item = Item()
-        db.session.add(item)
-        db.session.commit()
-    return render_template("inventory.html",
-                           title='Inventory',
-                           items=items)
+    if is_json_request():
+        items = "[" + ','.join([repr(item) for item in items]) + "]"
+        return jsonify(status='success', items=items)
+    return render_template('inventory.html',
+                            title='Inventory',
+                            items=items)
 
-@application.route('/sales', methods = ['GET', 'POST'])
+@application.route('/inventory/update', methods = ['GET', 'POST'])
+@login_required
+@roles_required('admin')
+def inventory_update():
+    if is_json_request():
+        if request.method == 'GET':
+            abort(400)
+        else:
+            return add_inventory_item_json(request.get_json())
+    form = InventoryItemForm()
+    if form.validate_on_submit() and add_inventory_item_html(form):
+        return redirect(request.args.get('next') or url_for('inventory'))
+    return render_template('inventory_update.html',
+                            title='Inventory',
+                            form=form)
+
+@application.route('/sales')
 @login_required
 @roles_required('admin')
 def sales():
     sales = Sale.query.all()
-    if request.method == 'POST':
-        sale = Sale()
-        db.session.add(sale)
-        db.session.commit()
-    return render_template("sales.html",
-                           title='Sales',
-                           sales=sales)
+    if is_json_request():
+        sales = "[" + ','.join([repr(sale) for sale in sales]) + "]"
+        return jsonify(status='success', sales=sales)
+    return render_template('sales.html',
+                            title='Sales',
+                            sales=sales)
+
+@application.route('/sales/update', methods = ['GET', 'POST'])
+@login_required
+@roles_required('admin')
+def sales_update():
+    if is_json_request():
+        if request.method == 'GET':
+            abort(400)
+        else:
+            return add_sales_item_json(request.get_json())
+    form = SalesItemForm()
+    if form.validate_on_submit() and add_sales_item_html(form):
+        return redirect(request.args.get('next') or url_for('sales'))
+    return render_template('sales_update.html',
+                            title='Sales',
+                            form=form)
 
 def handle_error(errnum, errmsg):
     if is_json_request():
@@ -130,3 +161,7 @@ def not_found(error):
 @application.errorhandler(401)
 def not_found(error):
     handle_error(401, "Access Denied")
+
+@application.errorhandler(400)
+def not_found(error):
+    handle_error(400, "Bad Request")

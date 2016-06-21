@@ -1,6 +1,7 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, BooleanField, PasswordField
-from wtforms.validators import DataRequired, Email
+from wtforms import StringField, BooleanField, PasswordField, IntegerField
+from wtforms import TextAreaField, DateField
+from wtforms.validators import DataRequired, Email, Optional
 from app import db, application
 
 class RegisterForm(Form):
@@ -34,6 +35,36 @@ class LoginForm(Form):
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
         self.user = None
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+        return True
+
+class InventoryItemForm(Form):
+    name = StringField('Name', validators=[DataRequired()], id='name')
+    description = TextAreaField('Description')
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
+    price = IntegerField('Price', validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+        return True
+
+class SalesItemForm(Form):
+    name = StringField('Name', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
+    price = IntegerField('Price', validators=[DataRequired()])
+    date = DateField('Date', format="%d/%m/%y", validators=[Optional()])
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
 
     def validate(self):
         rv = Form.validate(self)

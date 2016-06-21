@@ -1,0 +1,36 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<script type="text/javascript">
+</script>
+<h1>Inventory Item</h1>
+<form action="" method="post" name="inventory_update">
+    {{ form.hidden_tag() }}
+    <p>
+        Name:<br>
+        {{ form.name(size=50) }}<br>
+        {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        Description (Optional):<br>
+        {{ form.description(rows="4", cols="50") }}<br>
+        {% for error in form.description.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+	{% endfor %}<br>
+        Quantity:<br>
+        {{ form.quantity(size=50) }}<br>
+        {% for error in form.quantity.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+	{% endfor %}<br>
+        Price:<br>
+        {{ form.price(size=50) }}<br>
+        {% for error in form.price.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        <p>
+            <input type="submit" name="update" value="Add or Update">
+        </p>
+    </p>
+</form>
+{% endblock %}

@@ -1,7 +1,11 @@
 {% extends "base.html" %}
+
 {% block content %}
-  <h1>Inventory List</h1>
-  {% for item in items %}
+<h1>Inventory List</h1>
+{% for item in items %}
   <div><p>Item: {{ item.name }}, Quantity: {{ item.quantity }}</b></p></div>
-  {% endfor %}
+{% endfor %}
+<p>
+  <a href="{{ url_for('inventory_update') }}">Add or Update Inventory Item</a>
+</p>
 {% endblock %}

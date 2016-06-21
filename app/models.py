@@ -23,13 +23,16 @@ class User(UserMixin, db.Model):
         return False
 
     def get_id(self):
-            return str(self.id) # python 3
+        try:
+            return unicode(self.id)
+        except NameError:
+            return str(self.id)
 
     def __repr__(self):
         return '{"firstname":"%s","lastname":"%s","is_admin":"%s"}' % \
                                                         (self.firstname,
-                                                            self.lastname,
-                                                            self.is_admin)
+                                                         self.lastname,
+                                                         self.is_admin)
 
 class Item(db.Model):
     __tablename__ = 'items'
@@ -42,13 +45,17 @@ class Item(db.Model):
     sales = db.relationship('Sale', backref='item', lazy='dynamic')
 
     def get_id(self):
-            return str(self.id) # python 3
+        try:
+            return unicode(self.id)
+        except NameError:
+            return str(self.id)
 
     def image(self, size):
         return cloudinaryDB.compose_url(self.image_url, size)
 
     def __repr__(self):
-        return '<Item %r, Price %d>' % (self.name, self.price)
+        return '{"name":"%s","description":"%s","quantity":"%s","price":"%s"}' \
+                    % (self.name, self.description, self.quantity, self.price)
 
 class Sale(db.Model):
     __tablename__ = 'sales'
@@ -57,3 +64,13 @@ class Sale(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime, index=True, nullable=False)
+
+    def get_id(self):
+        try:
+            return unicode(self.id)
+        except NameError:
+            return str(self.id)
+
+    def __repr__(self):
+        return '{"name":"%s","quantity":"%s","price":"%s", "date":"%s"}' \
+                    % (self.name, self.quantity, self.price, self.date)
