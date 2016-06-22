@@ -2,7 +2,32 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function() {
+    $.ajax({
+        url: '{{ url_for("autocomplete") }}'
+    }).done(function (data) {
+        $('#name').autocomplete({
+            source: data.names,
+            minLength: 2,
+	    select: function( event , ui ) {
+		$.ajax({
+		    url: '{{ url_for("get_item", name="") }}' + ui.item.value
+		}).done(function (data) {
+		    var obj = JSON.parse(data.item)
+		    form = document.forms['inventory_update'];
+		    form.elements['name'].value = obj['name'];
+		    form.elements['description'].value = obj['description'];
+		    form.elements['quantity'].value = obj['quantity'];
+		    form.elements['price'].value = obj['price'];
+	        });
+            }
+	});
+    });
+});
 </script>
 <h1>Inventory Item</h1>
 <form action="" method="post" name="inventory_update">

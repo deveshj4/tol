@@ -147,6 +147,25 @@ def sales_update():
                             title='Sales',
                             form=form)
 
+@application.route('/autocomplete')
+@login_required
+@roles_required('admin')
+def autocomplete():
+    search = request.args.get('term')
+    if search is None:
+        items = Item.query.all()
+    else:
+        items = db.session.query(Item).filter(Item.name.like('%'+str(search)+'%')).all();
+    names = [item.name for item in items]
+    return jsonify(names=names)
+
+@application.route('/get_item/<name>')
+@login_required
+@roles_required('admin')
+def get_item(name):
+    item = Item.query.filter_by(name=name).first()
+    return jsonify(item=repr(item))
+
 def handle_error(errnum, errmsg):
     if is_json_request():
         return make_response(jsonify(error=errmsg), errnum)
