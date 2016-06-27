@@ -1,0 +1,41 @@
+body {
+  padding-top: 50px;
+}
+
+/* background */
+.navbar-custom {
+  background-color: #D19FE9;
+  border-color: #E7E7E7;
+}
+/* title */
+.navbar-custom .navbar-brand {
+  color: #FFFFFF;
+}
+.navbar-custom .navbar-brand:hover,
+.navbar-custom .navbar-brand:focus {
+  color: #5E5E5E;
+}
+/* link */
+.navbar-custom .navbar-nav > li > a {
+  color: #FFFFFF;
+}
+.navbar-custom .navbar-nav > li > a:hover,
+.navbar-custom .navbar-nav > li > a:focus {
+  color: #333;
+}
+.navbar-custom .navbar-nav > .active > a, 
+.navbar-custom .navbar-nav > .active > a:hover, 
+.navbar-custom .navbar-nav > .active > a:focus {
+  color: #333;
+  background-color: #D19FE9;
+}
+.navbar-custom .navbar-nav > .open > a, 
+.navbar-custom .navbar-nav > .open > a:hover, 
+.navbar-custom .navbar-nav > .open > a:focus {
+  color: #333;
+}
+/* caret */
+.navbar-custom .navbar-nav > .dropdown > a .caret {
+  border-top-color: #777;
+  border-bottom-color: #777;
+}
