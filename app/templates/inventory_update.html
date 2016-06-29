@@ -30,7 +30,7 @@ $(document).ready(function() {
 });
 </script>
 <h1>Inventory Item</h1>
-<form action="" method="post" name="inventory_update">
+<form action="" method="post" enctype="multipart/form-data" name="inventory_update">
     {{ form.hidden_tag() }}
     <p>
         Name:<br>
@@ -54,6 +54,7 @@ $(document).ready(function() {
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
         <p>
+	    <input type="file" name="image" value="Choose File"><br>
             <input type="submit" name="update" value="Add or Update">
         </p>
     </p>

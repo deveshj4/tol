@@ -3,6 +3,7 @@ from wtforms import StringField, BooleanField, PasswordField, IntegerField
 from wtforms import TextAreaField, DateField
 from wtforms.validators import DataRequired, Email, Optional
 from app import db, application
+from flask import flash, request
 
 class RegisterForm(Form):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -47,6 +48,7 @@ class InventoryItemForm(Form):
     description = TextAreaField('Description')
     quantity = IntegerField('Quantity', validators=[DataRequired()])
     price = IntegerField('Price', validators=[DataRequired()])
+    image = None
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
@@ -55,6 +57,14 @@ class InventoryItemForm(Form):
         rv = Form.validate(self)
         if not rv:
             return False
+
+        if 'image' in request.files:
+            image = request.files['image']
+            if image.filename != "" and '.' not in image.filename:
+                flash("Invalid image filename")
+                return False
+            self.image = image
+
         return True
 
 class SalesItemForm(Form):

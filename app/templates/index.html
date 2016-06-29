@@ -1,4 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+  {% if user is not none %}
   <h1>Hi, {{ user.firstname }}!</h1>
+  {% endif %}
+  {% for item in items %}
+  <img src="{{ item.get_image_url(150, 100) }}" ><br>
+  {% endfor %}
 {% endblock %}

@@ -1,4 +1,4 @@
-from app import db, cloudinaryDB
+from app import db, cloudinaryDB, application
 from flask.ext.login import UserMixin
 
 class User(UserMixin, db.Model):
@@ -39,7 +39,7 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, nullable=False, unique=True)
     description = db.Column(db.String(250))
-    image_url = db.Column(db.String(120))
+    image_name = db.Column(db.String(120))
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     sales = db.relationship('Sale', backref='item', lazy='dynamic')
@@ -50,8 +50,12 @@ class Item(db.Model):
         except NameError:
             return str(self.id)
 
-    def image(self, size):
-        return cloudinaryDB.compose_url(self.image_url, size)
+    def get_image_url(self, width, height):
+        if self.image_name is not None:
+            img_name = self.image_name
+        else:
+            img_name = application.config['DEFAULT_ITEM_IMGNAME']
+        return cloudinaryDB.compose_url(img_name, width, height)
 
     def __repr__(self):
         return '{"name":"%s","description":"%s","quantity":"%s","price":"%s"}' \

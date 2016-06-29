@@ -1,6 +1,6 @@
 from flask import jsonify
 from models import Item, Sale
-from app import db
+from app import db, cloudinaryDB
 
 def add_inventory_item_html(form):
     name = form.name.data.strip()
@@ -19,6 +19,9 @@ def add_inventory_item_html(form):
         item.price = price
         if description != "":
             item.description = description
+    if form.image is not None:
+        item.image_name = item.name
+        cloudinaryDB.upload_image(form.image, item.image_name)
     db.session.commit()
     return True
 

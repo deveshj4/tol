@@ -33,14 +33,22 @@ def load_user(id):
 
 @application.route('/')
 @application.route('/index')
-@login_required
 def index():
     if is_json_request():
-        return jsonify(user=repr(g.user))
-    else:
-        return render_template("index.html",
-                                title='Home',
-                                user=g.user)
+        abort(400)
+    if g.user is not None and g.user.is_authenticated:
+        return redirect(url_for('home'))
+    items = Item.query.all()
+    return render_template("index.html", user=None, items=items)
+
+@application.route('/home')
+@login_required
+def home():
+    if is_json_request():
+        return jsonify(status="success", user=repr(g.user))
+    items = Item.query.all()
+    return render_template("index.html", title='Home', user=g.user,
+                            items=items)
 
 @application.route('/register', methods=['GET', 'POST'])
 def register():
@@ -49,7 +57,7 @@ def register():
             return jsonify(status='failed', error='user already logged in',
                            user=repr(g.user))
         else:
-            return redirect(url_for('index'))
+            return redirect(url_for('home'))
     if is_json_request():
         user, response = validate_json_register(request.get_json())
         if user is not None:
@@ -59,9 +67,7 @@ def register():
     if form.validate_on_submit() and validate_html_register(form):
         login_user(form.user)
         return redirect(request.args.get('next') or url_for('index'))
-    return render_template('register.html',
-                            title='Register',
-                            form=form)
+    return render_template('register.html', title='Register', form=form)
 
 @application.route('/login', methods=['GET', 'POST'])
 def login():
@@ -70,7 +76,7 @@ def login():
             return jsonify(status='failed', error='user already logged in',
                             user=repr(user))
         else:
-            return redirect(url_for('index'))
+            return redirect(url_for('home'))
     if is_json_request():
         user, response = validate_json_login(request.get_json())
         if user is not None:
@@ -79,12 +85,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit() and validate_html_login(form):
         login_user(form.user)
-        return redirect(request.args.get('next') or url_for('index'))
-    return render_template('login.html',
-                            title='Sign In',
-                            form=form)
+        return redirect(request.args.get('next') or url_for('home'))
+    return render_template('login.html', title='Sign In', form=form)
 
 @application.route('/logout')
+@login_required
 def logout():
     logout_user()
     if is_json_request():
@@ -99,9 +104,7 @@ def inventory():
     if is_json_request():
         items = "[" + ','.join([repr(item) for item in items]) + "]"
         return jsonify(status='success', items=items)
-    return render_template('inventory.html',
-                            title='Inventory',
-                            items=items)
+    return render_template('inventory.html', title='Inventory', items=items)
 
 @application.route('/inventory/update', methods = ['GET', 'POST'])
 @login_required
@@ -115,8 +118,7 @@ def inventory_update():
     form = InventoryItemForm()
     if form.validate_on_submit() and add_inventory_item_html(form):
         return redirect(request.args.get('next') or url_for('inventory'))
-    return render_template('inventory_update.html',
-                            title='Inventory',
+    return render_template('inventory_update.html', title='Inventory',
                             form=form)
 
 @application.route('/sales')
@@ -127,9 +129,7 @@ def sales():
     if is_json_request():
         sales = "[" + ','.join([repr(sale) for sale in sales]) + "]"
         return jsonify(status='success', sales=sales)
-    return render_template('sales.html',
-                            title='Sales',
-                            sales=sales)
+    return render_template('sales.html', title='Sales', sales=sales)
 
 @application.route('/sales/update', methods = ['GET', 'POST'])
 @login_required
@@ -143,9 +143,7 @@ def sales_update():
     form = SalesItemForm()
     if form.validate_on_submit() and add_sales_item_html(form):
         return redirect(request.args.get('next') or url_for('sales'))
-    return render_template('sales_update.html',
-                            title='Sales',
-                            form=form)
+    return render_template('sales_update.html', title='Sales', form=form)
 
 @application.route('/autocomplete')
 @login_required

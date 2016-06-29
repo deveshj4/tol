@@ -5,6 +5,7 @@ WTF_CSRF_ENABLED = True
 SECRET_KEY = 'com.tokenoflove.app'
 CLOUDINARY_URL = 'cloudinary://959382593352937:UWFmeGPq7IHMYta1PNwHEL1LqrQ@dqwkmzjxu'
 ADMIN_PASSWORD = 'TokenOfLove.Admin'
+DEFAULT_ITEM_IMGNAME = 'logo_cn2qww.png'
 
 if os.environ.get('DATABASE_URL') is None:
     SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/tol'
