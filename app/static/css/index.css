@@ -1,0 +1,26 @@
+/* CUSTOMIZE THE CAROUSEL
+ * -------------------------------------------------- */
+/* Carousel base class */
+.carousel {
+  height: 450px;
+  margin-bottom: 30px;
+  padding-top: 30px;
+  background-color: #D19FE9;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  z-index: 10;
+}
+/* Declare heights because of positioning of img element */
+.carousel .item {
+  height: 400px;
+}
+.carousel-inner > .item > img {
+  position: center;
+  margin: 0 auto;
+}
+
+h2{
+  color: #0F0F0F;
+  text-align: center;
+}

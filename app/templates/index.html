@@ -1,9 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
+<link href="/static/css/index.css" rel="stylesheet">
+<script src="/static/js/index.js"></script>
+<div class="container">
   {% if user is not none %}
   <h1>Hi, {{ user.firstname }}!</h1>
   {% endif %}
-  {% for item in items %}
-  <img src="{{ item.get_image_url(150, 100) }}" ><br>
-  {% endfor %}
+</div>
+<div class="container">
+      <div class="carousel slide" id="theCarousel">
+	<ol class="carousel-indicators">
+          {% for i in range(items|length) %}
+	  {% if i == 0 %}
+	  <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+	  {% else %}
+	  <li data-target="#myCarousel" data-slide-to="{{ i }}"></li>
+	  {% endif %}
+	  {% endfor %}
+	</ol>
+        <div class="carousel-inner">
+          {% for i in range(items|length) %}
+	  {% if i == 0 %}
+          <div class="item active">
+	  {% else %}
+          <div class="item">
+	  {% endif %}
+	      <img src="{{ items[i].get_image_url(350, 300) }}" class="img-responsive">
+	      <div class="carousel-caption">{{ items[i].name }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        <a class="left carousel-control" href="#theCarousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+        <a class="right carousel-control" href="#theCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+      </div>
+</div>
+<h2>Products</h2>
 {% endblock %}
